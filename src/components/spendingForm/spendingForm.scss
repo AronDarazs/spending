@@ -1,0 +1,14 @@
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  .input-fields {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .order-filter {
+    display: flex;
+    justify-content: space-between;
+  }
+}
