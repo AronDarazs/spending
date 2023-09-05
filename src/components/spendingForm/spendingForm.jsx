@@ -23,6 +23,7 @@ const SpendingForm = () => {
   const [sorting, setSorting] = useState("descend");
   const [errors, setErrors] = useState({});
   const [sortedSpendings, setSortedSpendings] = useState([]);
+  const [filteredSpendings, setFilteredSpendings] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -104,6 +105,19 @@ const SpendingForm = () => {
     return sortedData;
   };
 
+  const filterSpendings = (data, filterValue) => {
+    if (filterValue === "ALL") {
+      return data;
+    }
+    return data.filter((spending) => spending.currency === filterValue);
+  };
+
+  // Update the filteredSpendings state whenever spendings or filter change
+  useEffect(() => {
+    const filteredData = filterSpendings(sortedSpendings, filter);
+    setFilteredSpendings(filteredData);
+  }, [sortedSpendings, filter]);
+
   // Update the sortedSpendings state whenever spendings or sorting change
   useEffect(() => {
     const sortedData = sortSpendings(spendings, sorting);
@@ -179,7 +193,7 @@ const SpendingForm = () => {
         </div>
       </div>
       <ul>
-        {sortedSpendings.map((spending, id) => (
+        {filteredSpendings.map((spending, id) => (
           <Spending spending={spending} key={id}></Spending>
         ))}
       </ul>
