@@ -4,6 +4,10 @@ import Spending from "../spending/spending";
 import "./SpendingForm.scss";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 
 const SpendingForm = () => {
   const [formData, setFormData] = useState({
@@ -13,22 +17,43 @@ const SpendingForm = () => {
     spent_at: "",
   });
 
+  const [spendings, setSpendings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("ALL");
+  const [sorting, setSorting] = useState("descend");
+  const [errors, setErrors] = useState({});
+  const [sortedSpendings, setSortedSpendings] = useState([]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form data (check for missing fields)
-    if (!formData.description || !formData.amount) {
-      // Handle form validation error
-      return;
+    // Reset validation errors
+    const validationErrors = {};
+
+    // Validate description
+    if (!formData.description.trim()) {
+      validationErrors.description = "Description is required";
     }
 
-    // Transform the amount to an integer
+    // Validate amount
     const amountAsInt = parseInt(formData.amount, 10);
+    if (isNaN(amountAsInt) || amountAsInt <= 0) {
+      validationErrors.amount = "Amount must be a positive number";
+    }
+
+    // If there are validation errors, set them and prevent submission
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     // Transform the currency to uppercase
     const currencyUppercase = formData.currency.toUpperCase();
@@ -43,6 +68,8 @@ const SpendingForm = () => {
     // Set spent_at to the current datetime
     const currentDatetime = new Date().toISOString();
     transformedData.spent_at = currentDatetime;
+
+    console.log(formData);
 
     try {
       await createSpending(transformedData);
@@ -62,27 +89,32 @@ const SpendingForm = () => {
     }
   };
 
-  const handleCreateSpending = async (newSpending) => {
-    try {
-      const createdSpending = await createSpending(newSpending);
-      setSpendings([...spendings, createdSpending]);
-      // Handle success or show a success message to the user
-    } catch (error) {
-      console.error("Error creating spending:", error);
-      // Handle errors or show an error message to the user
+  useEffect(() => {
+    fetchSpendings();
+  }, [createSpending]);
+
+  // Sorting function
+  const sortSpendings = (data, sortOrder) => {
+    const sortedData = [...data];
+    if (sortOrder === "ascend") {
+      sortedData.sort((a, b) => new Date(a.spent_at) - new Date(b.spent_at));
+    } else {
+      sortedData.sort((a, b) => new Date(b.spent_at) - new Date(a.spent_at));
     }
+    return sortedData;
   };
 
-  const handleFilter = (event, newFilter) => {
-    if (newFilter !== null) {
-      setFilter(newFilter);
+  // Update the sortedSpendings state whenever spendings or sorting change
+  useEffect(() => {
+    const sortedData = sortSpendings(spendings, sorting);
+    setSortedSpendings(sortedData);
+  }, [spendings, sorting]);
+
+  const handleFilter = (event) => {
+    if (event.target.value !== null) {
+      setFilter(event.target.value);
     }
   };
-
-  const [spendings, setSpendings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("ALL");
-
   // Fetch spendings when the component mounts
   async function fetchSpendings() {
     try {
@@ -93,70 +125,61 @@ const SpendingForm = () => {
       console.error("Error fetching spendings:", error);
     }
   }
-  useEffect(() => {
-    fetchSpendings();
-  }, [createSpending]);
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <div className="input-wrapper">
           <div className="input-fields">
-            <input
-              type="text"
+            <TextField
               placeholder="description"
-              name="description" // Match the key in formData
-              value={formData.description}
+              variant="outlined"
+              name="description"
               onChange={handleInputChange}
+              value={formData.description} // Include the value prop to reflect the formData
+              error={!!errors.description}
+              helperText={errors.description}
             />
-            <input
-              type="number"
+            <TextField
               placeholder="0"
-              name="amount" // Match the key in formData
-              value={formData.amount}
+              variant="outlined"
+              type="number"
+              name="amount"
               onChange={handleInputChange}
+              value={formData.amount} // Include the value prop to reflect the formData
+              error={!!errors.amount}
+              helperText={errors.amount}
             />
-            {/* <label for="currency"></label> */}
-            <select
-              id="currency"
-              name="currency" // Match the key in formData
+            <Select
               value={formData.currency}
+              label="currency"
+              name="currency"
               onChange={handleInputChange}
             >
-              <option value="usd">USD</option>
-              <option value="huf">HUF</option>
-            </select>
-            <input type="submit" />
+              <MenuItem value="USD">USD</MenuItem>
+              <MenuItem value="HUF">HUF</MenuItem>
+            </Select>
+            <Button variant="contained" color="success" type="submit">
+              Submit
+            </Button>
           </div>
-          <div className="order-filter">
-            <select id="order" defaultValue="Sort by Date descending (Default)">
-              <option value="descend">Sort by Date descending (Default)</option>
-              <option value="ascend">Sort by Date ascending</option>
-            </select>
-            <div>
-              <ToggleButtonGroup
-                value={filter}
-                exclusive
-                onChange={handleFilter}
-                aria-label="text alignment"
-              >
-                <ToggleButton value="ALL">
-                  ALL
-                </ToggleButton>
-                <ToggleButton value="HUF">
-                  HUF
-                </ToggleButton>
-                <ToggleButton value="USD">
-                  USD
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-          </div>
-          <div></div>
         </div>
       </form>
+      <div className="order-filter">
+        <Select value={sorting} onChange={(e) => setSorting(e.target.value)}>
+          <MenuItem value="descend">Sort by Date descending (Default)</MenuItem>
+          <MenuItem value="ascend">Sort by Date ascending</MenuItem>
+        </Select>
+        <div>
+          <ToggleButtonGroup value={filter} exclusive onChange={handleFilter}>
+            <ToggleButton value="ALL">ALL</ToggleButton>
+            <ToggleButton value="HUF">HUF</ToggleButton>
+            <ToggleButton value="USD">USD</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      </div>
       <ul>
-        {spendings.map((spending, id) => (
+        {sortedSpendings.map((spending, id) => (
           <Spending spending={spending} key={id}></Spending>
         ))}
       </ul>
