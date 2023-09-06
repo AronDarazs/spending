@@ -214,11 +214,11 @@ const SpendingForm = () => {
           </div>
         </div>
       </div>
-      <ul>
+      <div>
         {filteredSpendings.map((spending, id) => (
           <Spending spending={spending} key={id}></Spending>
         ))}
-      </ul>
+      </div>
     </>
   );
 };

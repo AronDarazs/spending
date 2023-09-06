@@ -1,6 +1,9 @@
 import { AttachMoney } from "@mui/icons-material";
 import "./spending.scss";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import Button from "@mui/material/Button";
 
 const Spending = ({ spending }) => {
   function formatAmount() {
@@ -28,16 +31,26 @@ const Spending = ({ spending }) => {
   }
 
   return (
-    <li className="wrapper">
-      <MonetizationOnOutlinedIcon className="square" />
-      <div className="descriptions">
-        <h1>{spending.description}</h1>
-        <h4>{formatDate()}</h4>
+    <div className="spending-wrapper">
+      <div className="inner-wrapper">
+        <MonetizationOnOutlinedIcon className="square" />
+        <div className="descriptions">
+          <h1>{spending.description}</h1>
+          <h4>{formatDate()}</h4>
+        </div>
       </div>
-      <div className="amount">
-        <h1>{formatAmount()}</h1>
+      <div className="inner-wrapper">
+        <div className="amount">
+          <h1>{formatAmount()}</h1>
+        </div>
+        <Button>
+          <BorderColorOutlinedIcon />
+        </Button>
+        <Button>
+          <ClearOutlinedIcon />
+        </Button>
       </div>
-    </li>
+    </div>
   );
 };
 

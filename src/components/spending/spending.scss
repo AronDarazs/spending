@@ -1,15 +1,18 @@
-.wrapper {
+.spending-wrapper {
   border-radius: 8px;
   border-width: 1px;
   border-style: solid;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-bottom: 12px;
   padding: 6px;
-  flex-direction: row !important;
+  flex-direction: row;
 
-  .square {
+  .inner-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .descriptions,
