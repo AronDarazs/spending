@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
 const CURRENCIES = ["USD", "HUF"];
 const DEFAULT_FORM_DATA = {
   description: "",
-  amount: 0,
+  amount: "",
   currency: "USD",
   spent_at: "",
 };
