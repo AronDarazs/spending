@@ -169,7 +169,7 @@ const SpendingForm = () => {
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
             <TextField
-              placeholder="Description"
+              placeholder="description"
               variant="outlined"
               name="description"
               onChange={handleInputChange}

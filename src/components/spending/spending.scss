@@ -1,7 +1,6 @@
 .spending-wrapper {
+  border: 1px solid gray;
   border-radius: 8px;
-  border-width: 1px;
-  border-style: solid;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -13,6 +12,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
+
+    Button {
+      color: gray;
+    }
   }
 
   .descriptions,
@@ -22,10 +25,5 @@
     align-items: flex-start;
     align-content: center;
     justify-content: center;
-  }
-
-  h1,
-  h4 {
-    margin: 0;
   }
 }
