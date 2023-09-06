@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createSpending, getSpendingList } from "../../services/apiService";
 import Spending from "../spending/spending";
+import FilterComponent from "../filterComponent/filterComponent";
+import SortingComponent from "../sortingComponent/sortingComponent";
 import "./SpendingForm.scss";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -9,14 +11,17 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 
-const SpendingForm = () => {
-  const [formData, setFormData] = useState({
-    description: "",
-    amount: 0,
-    currency: "USD",
-    spent_at: "",
-  });
+// Constants
+const CURRENCIES = ["USD", "HUF"];
+const DEFAULT_FORM_DATA = {
+  description: "",
+  amount: 0,
+  currency: "USD",
+  spent_at: "",
+};
 
+const SpendingForm = () => {
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [spendings, setSpendings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("ALL");
@@ -86,12 +91,7 @@ const SpendingForm = () => {
 
   // Reset the form
   const resetForm = () => {
-    setFormData({
-      description: "",
-      amount: 0,
-      currency: "USD",
-      spent_at: "",
-    });
+    setFormData(DEFAULT_FORM_DATA);
   };
 
   // Fetch spendings when the component mounts
@@ -154,7 +154,7 @@ const SpendingForm = () => {
         <div className="input-wrapper">
           <div className="input-fields">
             <TextField
-              placeholder="description"
+              placeholder="Description"
               variant="outlined"
               name="description"
               onChange={handleInputChange}
@@ -174,12 +174,15 @@ const SpendingForm = () => {
             />
             <Select
               value={formData.currency}
-              label="currency"
+              label="Currency"
               name="currency"
               onChange={handleInputChange}
             >
-              <MenuItem value="USD">USD</MenuItem>
-              <MenuItem value="HUF">HUF</MenuItem>
+              {CURRENCIES.map((currency) => (
+                <MenuItem key={currency} value={currency}>
+                  {currency}
+                </MenuItem>
+              ))}
             </Select>
             <Button variant="contained" color="success" type="submit">
               Submit
@@ -188,20 +191,13 @@ const SpendingForm = () => {
         </div>
       </form>
       <div className="order-filter">
-        <Select value={sorting} onChange={(e) => setSorting(e.target.value)}>
-          <MenuItem value="descend">Sort by Date descending (Default)</MenuItem>
-          <MenuItem value="ascend">Sort by Date ascending</MenuItem>
-        </Select>
+        <SortingComponent sorting={sorting} setSorting={setSorting} />
         <div>
-          <ToggleButtonGroup
-            value={filter}
-            exclusive
-            onChange={handleFilterChange}
-          >
-            <ToggleButton value="ALL">ALL</ToggleButton>
-            <ToggleButton value="HUF">HUF</ToggleButton>
-            <ToggleButton value="USD">USD</ToggleButton>
-          </ToggleButtonGroup>
+          <FilterComponent
+            filter={filter}
+            setFilter={setFilter}
+            currencies={CURRENCIES}
+          />
         </div>
       </div>
       <ul>
