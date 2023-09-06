@@ -1,4 +1,6 @@
+import { AttachMoney } from "@mui/icons-material";
 import "./spending.scss";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 
 const Spending = ({ spending }) => {
   function formatAmount() {
@@ -27,6 +29,7 @@ const Spending = ({ spending }) => {
 
   return (
     <li className="wrapper">
+      <MonetizationOnOutlinedIcon className="square" />
       <div className="descriptions">
         <h1>{spending.description}</h1>
         <h4>{formatDate()}</h4>

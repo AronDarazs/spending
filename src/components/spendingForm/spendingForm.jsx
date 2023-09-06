@@ -4,12 +4,11 @@ import Spending from "../spending/spending";
 import FilterComponent from "../filterComponent/filterComponent";
 import SortingComponent from "../sortingComponent/sortingComponent";
 import "./SpendingForm.scss";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+
 
 // Constants
 const CURRENCIES = ["USD", "HUF"];
@@ -71,9 +70,26 @@ const SpendingForm = () => {
       validationErrors.description = "Description is required";
     }
 
-    const amountAsInt = parseInt(formData.amount, 10);
-    if (isNaN(amountAsInt) || amountAsInt <= 0) {
-      validationErrors.amount = "Amount must be a positive number";
+    if (formData.currency === "HUF") {
+      const amountPattern = /^\d+$/; // Regular expression for a valid integer
+      if (!amountPattern.test(formData.amount)) {
+        validationErrors.amount =
+          "Amount must be a valid integer for HUF currency";
+      }
+    } else if (formData.currency === "USD") {
+      const amountPattern = /^\d+(\.\d{2})?$/; // Regular expression for a valid decimal number with two decimal places
+      if (!amountPattern.test(formData.amount)) {
+        validationErrors.amount =
+          "Amount must be a valid number with two decimal places for USD currency";
+      }
+    }
+
+    // Check if there are no validation errors
+    const isValid = Object.keys(validationErrors).length === 0;
+
+    // Reset errors when data is valid
+    if (isValid) {
+      setErrors({});
     }
 
     return validationErrors;
@@ -150,54 +166,56 @@ const SpendingForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div className="input-wrapper">
-          <div className="input-fields">
-            <TextField
-              placeholder="Description"
-              variant="outlined"
-              name="description"
-              onChange={handleInputChange}
-              value={formData.description}
-              error={!!errors.description}
-              helperText={errors.description}
-            />
-            <TextField
-              placeholder="0"
-              variant="outlined"
-              type="number"
-              name="amount"
-              onChange={handleInputChange}
-              value={formData.amount}
-              error={!!errors.amount}
-              helperText={errors.amount}
-            />
-            <Select
-              value={formData.currency}
-              label="Currency"
-              name="currency"
-              onChange={handleInputChange}
-            >
-              {CURRENCIES.map((currency) => (
-                <MenuItem key={currency} value={currency}>
-                  {currency}
-                </MenuItem>
-              ))}
-            </Select>
-            <Button variant="contained" color="success" type="submit">
-              Submit
-            </Button>
+      <div className="upper-wrapper">
+        <form onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <div className="input-fields">
+              <TextField
+                placeholder="Description"
+                variant="outlined"
+                name="description"
+                onChange={handleInputChange}
+                value={formData.description}
+                error={!!errors.description}
+                helperText={errors.description}
+              />
+              <TextField
+                placeholder="0"
+                variant="outlined"
+                type="number"
+                name="amount"
+                onChange={handleInputChange}
+                value={formData.amount}
+                error={!!errors.amount}
+                helperText={errors.amount}
+              />
+              <Select
+                value={formData.currency}
+                label="Currency"
+                name="currency"
+                onChange={handleInputChange}
+              >
+                {CURRENCIES.map((currency) => (
+                  <MenuItem key={currency} value={currency}>
+                    {currency}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Button variant="contained" color="success" type="submit">
+                Submit
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
-      <div className="order-filter">
-        <SortingComponent sorting={sorting} setSorting={setSorting} />
-        <div>
-          <FilterComponent
-            filter={filter}
-            setFilter={setFilter}
-            currencies={CURRENCIES}
-          />
+        </form>
+        <div className="order-filter">
+          <SortingComponent sorting={sorting} setSorting={setSorting} />
+          <div>
+            <FilterComponent
+              filter={filter}
+              setFilter={setFilter}
+              currencies={CURRENCIES}
+            />
+          </div>
         </div>
       </div>
       <ul>

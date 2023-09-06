@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
+  align-content: space-around;
+  flex-wrap: wrap;
   .input-fields {
     display: flex;
     justify-content: center;
@@ -22,5 +24,5 @@
 }
 .order-filter {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
