@@ -25,64 +25,32 @@ const SpendingForm = () => {
   const [sortedSpendings, setSortedSpendings] = useState([]);
   const [filteredSpendings, setFilteredSpendings] = useState([]);
 
+  // Function to handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset validation errors
-    const validationErrors = {};
-
-    // Validate description
-    if (!formData.description.trim()) {
-      validationErrors.description = "Description is required";
-    }
-
-    // Validate amount
-    const amountAsInt = parseInt(formData.amount, 10);
-    if (isNaN(amountAsInt) || amountAsInt <= 0) {
-      validationErrors.amount = "Amount must be a positive number";
-    }
-
-    // If there are validation errors, set them and prevent submission
+    const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Transform the currency to uppercase
-    const currencyUppercase = formData.currency.toUpperCase();
-
-    // Create a new object with transformed data
-    const transformedData = {
-      ...formData,
-      amount: amountAsInt,
-      currency: currencyUppercase,
-    };
-
-    // Set spent_at to the current datetime
+    const transformedData = transformFormData();
     const currentDatetime = new Date().toISOString();
     transformedData.spent_at = currentDatetime;
 
-    console.log(formData);
-
     try {
       await createSpending(transformedData);
-      // Reset the form
-      setFormData({
-        description: "",
-        amount: 0,
-        currency: "USD",
-        spent_at: "",
-      });
-
-      // Fetch updated spendings
+      resetForm();
       fetchSpendings();
     } catch (error) {
       console.error("Error creating spending:", error.response);
@@ -90,6 +58,43 @@ const SpendingForm = () => {
     }
   };
 
+  // Validation logic
+  const validateForm = () => {
+    const validationErrors = {};
+
+    if (!formData.description.trim()) {
+      validationErrors.description = "Description is required";
+    }
+
+    const amountAsInt = parseInt(formData.amount, 10);
+    if (isNaN(amountAsInt) || amountAsInt <= 0) {
+      validationErrors.amount = "Amount must be a positive number";
+    }
+
+    return validationErrors;
+  };
+
+  // Transformation logic
+  const transformFormData = () => {
+    const currencyUppercase = formData.currency.toUpperCase();
+    return {
+      ...formData,
+      amount: parseInt(formData.amount, 10),
+      currency: currencyUppercase,
+    };
+  };
+
+  // Reset the form
+  const resetForm = () => {
+    setFormData({
+      description: "",
+      amount: 0,
+      currency: "USD",
+      spent_at: "",
+    });
+  };
+
+  // Fetch spendings when the component mounts
   useEffect(() => {
     fetchSpendings();
   }, [createSpending]);
@@ -105,6 +110,7 @@ const SpendingForm = () => {
     return sortedData;
   };
 
+  // Filtering function
   const filterSpendings = (data, filterValue) => {
     if (filterValue === "ALL") {
       return data;
@@ -124,11 +130,13 @@ const SpendingForm = () => {
     setSortedSpendings(sortedData);
   }, [spendings, sorting]);
 
-  const handleFilter = (event) => {
+  // Function to handle filter change
+  const handleFilterChange = (event) => {
     if (event.target.value !== null) {
       setFilter(event.target.value);
     }
   };
+
   // Fetch spendings when the component mounts
   async function fetchSpendings() {
     try {
@@ -150,7 +158,7 @@ const SpendingForm = () => {
               variant="outlined"
               name="description"
               onChange={handleInputChange}
-              value={formData.description} // Include the value prop to reflect the formData
+              value={formData.description}
               error={!!errors.description}
               helperText={errors.description}
             />
@@ -160,7 +168,7 @@ const SpendingForm = () => {
               type="number"
               name="amount"
               onChange={handleInputChange}
-              value={formData.amount} // Include the value prop to reflect the formData
+              value={formData.amount}
               error={!!errors.amount}
               helperText={errors.amount}
             />
@@ -185,7 +193,11 @@ const SpendingForm = () => {
           <MenuItem value="ascend">Sort by Date ascending</MenuItem>
         </Select>
         <div>
-          <ToggleButtonGroup value={filter} exclusive onChange={handleFilter}>
+          <ToggleButtonGroup
+            value={filter}
+            exclusive
+            onChange={handleFilterChange}
+          >
             <ToggleButton value="ALL">ALL</ToggleButton>
             <ToggleButton value="HUF">HUF</ToggleButton>
             <ToggleButton value="USD">USD</ToggleButton>
