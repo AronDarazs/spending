@@ -9,7 +9,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 
-
 // Constants
 const CURRENCIES = ["USD", "HUF"];
 const DEFAULT_FORM_DATA = {
@@ -169,42 +168,39 @@ const SpendingForm = () => {
       <div className="upper-wrapper">
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
-            <div className="input-fields">
-              <TextField
-                placeholder="Description"
-                variant="outlined"
-                name="description"
-                onChange={handleInputChange}
-                value={formData.description}
-                error={!!errors.description}
-                helperText={errors.description}
-              />
-              <TextField
-                placeholder="0"
-                variant="outlined"
-                type="number"
-                name="amount"
-                onChange={handleInputChange}
-                value={formData.amount}
-                error={!!errors.amount}
-                helperText={errors.amount}
-              />
-              <Select
-                value={formData.currency}
-                label="Currency"
-                name="currency"
-                onChange={handleInputChange}
-              >
-                {CURRENCIES.map((currency) => (
-                  <MenuItem key={currency} value={currency}>
-                    {currency}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Button variant="contained" color="success" type="submit">
-                Submit
-              </Button>
-            </div>
+            <TextField
+              placeholder="Description"
+              variant="outlined"
+              name="description"
+              onChange={handleInputChange}
+              value={formData.description}
+              error={!!errors.description}
+              helperText={errors.description}
+            />
+            <TextField
+              placeholder="0"
+              variant="outlined"
+              type="number"
+              name="amount"
+              onChange={handleInputChange}
+              value={formData.amount}
+              error={!!errors.amount}
+              helperText={errors.amount}
+            />
+            <Select
+              value={formData.currency}
+              name="currency"
+              onChange={handleInputChange}
+            >
+              {CURRENCIES.map((currency) => (
+                <MenuItem key={currency} value={currency}>
+                  {currency}
+                </MenuItem>
+              ))}
+            </Select>
+            <Button variant="contained" color="success" type="submit">
+              Submit
+            </Button>
           </div>
         </form>
         <div className="order-filter">
