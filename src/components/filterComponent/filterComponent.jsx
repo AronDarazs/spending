@@ -11,9 +11,15 @@ const FilterComponent = ({ filter, setFilter, currencies }) => {
 
   return (
     <ToggleButtonGroup value={filter} exclusive onChange={handleFilterChange}>
-      <ToggleButton value="ALL">ALL</ToggleButton>
+      <ToggleButton value="ALL" data-testid="toggle-all">
+        ALL
+      </ToggleButton>
       {currencies.map((currency) => (
-        <ToggleButton key={currency} value={currency}>
+        <ToggleButton
+          key={currency}
+          value={currency}
+          data-testid={`toggle-${currency}`}
+        >
           {currency}
         </ToggleButton>
       ))}

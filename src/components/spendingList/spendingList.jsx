@@ -3,7 +3,7 @@ import { createSpending, getSpendingList } from "../../services/apiService";
 import Spending from "../spending/spending";
 import FilterComponent from "../filterComponent/filterComponent";
 import SortingComponent from "../sortingComponent/sortingComponent";
-import "./SpendingForm.scss";
+import "./SpendingList.scss";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,10 +18,9 @@ const DEFAULT_FORM_DATA = {
   spent_at: "",
 };
 
-const SpendingForm = () => {
+const SpendingList = () => {
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [spendings, setSpendings] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("ALL");
   const [sorting, setSorting] = useState("descend");
   const [errors, setErrors] = useState({});
@@ -145,19 +144,11 @@ const SpendingForm = () => {
     setSortedSpendings(sortedData);
   }, [spendings, sorting]);
 
-  // Function to handle filter change
-  const handleFilterChange = (event) => {
-    if (event.target.value !== null) {
-      setFilter(event.target.value);
-    }
-  };
-
   // Fetch spendings when the component mounts
   async function fetchSpendings() {
     try {
       const spendingsData = await getSpendingList();
       setSpendings(spendingsData);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching spendings:", error);
     }
@@ -176,6 +167,7 @@ const SpendingForm = () => {
               value={formData.description}
               error={!!errors.description}
               helperText={errors.description}
+              data-testid="input-description"
             />
             <TextField
               placeholder="0"
@@ -186,19 +178,30 @@ const SpendingForm = () => {
               value={formData.amount}
               error={!!errors.amount}
               helperText={errors.amount}
+              data-testid="input-amount"
             />
             <Select
               value={formData.currency}
               name="currency"
               onChange={handleInputChange}
+              data-testid="currency-select"
             >
               {CURRENCIES.map((currency) => (
-                <MenuItem key={currency} value={currency}>
+                <MenuItem
+                  key={currency}
+                  value={currency}
+                  data-testid={`${currency}-select`}
+                >
                   {currency}
                 </MenuItem>
               ))}
             </Select>
-            <Button variant="contained" color="success" type="submit">
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              data-testid="submit-button"
+            >
               Submit
             </Button>
           </div>
@@ -223,4 +226,4 @@ const SpendingForm = () => {
   );
 };
 
-export default SpendingForm;
+export default SpendingList;

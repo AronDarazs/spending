@@ -8,9 +8,13 @@ const SortingComponent = ({ sorting, setSorting }) => {
   };
 
   return (
-    <Select value={sorting} onChange={handleSortingChange}>
-      <MenuItem value="descend">Sort by Date descending (Default)</MenuItem>
-      <MenuItem value="ascend">Sort by Date ascending</MenuItem>
+    <Select value={sorting} onChange={handleSortingChange} data-testid="sort-component">
+      <MenuItem value="descend" data-testid="sort-descend">
+        Sort by Date descending (Default)
+      </MenuItem>
+      <MenuItem value="ascend" data-testid="sort-ascend">
+        Sort by Date ascending
+      </MenuItem>
     </Select>
   );
 };

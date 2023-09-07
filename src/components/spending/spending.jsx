@@ -35,13 +35,13 @@ const Spending = ({ spending }) => {
       <div className="inner-wrapper">
         <MonetizationOnOutlinedIcon className="square" />
         <div className="descriptions">
-          <b>{spending.description}</b>
-          <sub>{formatDate()}</sub>
+          <b data-testid="spending-description">{spending.description}</b>
+          <sub data-testid="spending-date">{formatDate()}</sub>
         </div>
       </div>
       <div className="inner-wrapper">
         <div className="amount">
-          <b>{formatAmount()}</b>
+          <b data-testid="spending-amount">{formatAmount()}</b>
         </div>
         <Button>
           <BorderColorOutlinedIcon />
