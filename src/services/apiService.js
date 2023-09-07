@@ -8,7 +8,7 @@ export const getSpendingList = async () => {
     const response = await axios.get(`${BASE_URL}/spendings`);
     return response.data;
   } catch (error) {
-    throw error; // Propagate the error for handling in the component
+    throw error;
   }
 };
 

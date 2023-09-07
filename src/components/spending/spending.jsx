@@ -6,6 +6,8 @@ import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Button from "@mui/material/Button";
 
 const Spending = ({ spending }) => {
+
+  //Formats amount based on the currency
   function formatAmount() {
     if (spending.currency === "USD") {
       return `$${spending.amount} `;
@@ -16,6 +18,7 @@ const Spending = ({ spending }) => {
     }
   }
 
+  //Formats the date
   function formatDate() {
     const options = {
       hour12: true,

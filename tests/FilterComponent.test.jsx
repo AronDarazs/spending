@@ -35,10 +35,8 @@ describe("FilterComponent", () => {
 
     const hufToggleButton = screen.getByTestId("toggle-HUF");
 
-    // Simulate a click on the GBP toggle button
     fireEvent.click(hufToggleButton);
 
-    // Verify that setFilter was called with the selected currency
     expect(mockSetFilter).toHaveBeenCalledWith("HUF");
   });
 });

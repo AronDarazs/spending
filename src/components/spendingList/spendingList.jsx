@@ -111,7 +111,7 @@ const SpendingList = () => {
   // Fetch spendings when the component mounts
   useEffect(() => {
     fetchSpendings();
-  }, [createSpending]);
+  }, []);
 
   // Sorting function
   const sortSpendings = (data, sortOrder) => {

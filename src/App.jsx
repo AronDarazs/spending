@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SpendingList from "./components/spendingList/spendingList";
 import "./App.css";
 
