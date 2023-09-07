@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import SortingComponent from "../src/components/sortingComponent/sortingComponent";
 
 // Mock the props for the component
